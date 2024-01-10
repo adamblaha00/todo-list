@@ -9,6 +9,7 @@ use App\Models\TodoList;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Contracts\View\View;
 
@@ -67,11 +68,11 @@ class TodoListIndexController extends Controller
      */
     protected function filterSearch(Builder $builder, array $validated): void
     {
-        if (!isset($validated['filter.search'])) {
+        if (!Arr::has($validated, 'filter.search')) {
             return;
         }
 
-        TodoList::scopeSearch($builder, $validated['filter.search']);
+        TodoList::scopeSearch($builder, Arr::get($validated, 'filter.search'));
     }
 
     /**
@@ -79,11 +80,11 @@ class TodoListIndexController extends Controller
      */
     protected function filterId(Builder $builder, array $validated): void
     {
-        if (!isset($validated['filter.id'])) {
+        if (!Arr::has($validated, 'filter.id')) {
             return;
         }
 
-        TodoList::scopeKey($builder, $validated['filter.id']);
+        TodoList::scopeKey($builder, Arr::get($validated, 'filter.id'));
     }
 
     /**
@@ -91,15 +92,15 @@ class TodoListIndexController extends Controller
      */
     protected function filterStatus(Builder $builder, array $validated): void
     {
-        if (!isset($validated['filter.status'])) {
+        if (!Arr::has($validated, 'filter.status')) {
             return;
         }
 
-        if ($validated['filter.status'] === 1) {
+        if ((int) Arr::get($validated, 'filter.status') === 1) {
             TodoList::scopePast($builder);
         }
 
-        if ($validated['filter.status'] === 2) {
+        if ((int) Arr::get($validated, 'filter.status') === 2) {
             TodoList::scopeUpcoming($builder);
         }
     }

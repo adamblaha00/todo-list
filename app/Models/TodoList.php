@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Models;
 
 use App\Traits\ModelTrait;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -38,7 +39,7 @@ class TodoList extends Model
      */
     public static function scopePast(Builder $builder): void
     {
-        $builder->getQuery()->whereRaw('CONCAT(date, \' \', time) < NOW()');
+        $builder->getQuery()->where('due_date', '<', Carbon::now());
     }
 
     /**
@@ -46,6 +47,6 @@ class TodoList extends Model
      */
     public static function scopeUpcoming(Builder $builder): void
     {
-        $builder->getQuery()->whereRaw('CONCAT(date, \' \', time) >= NOW()');
+        $builder->getQuery()->where('due_date', '>', Carbon::now());
     }
 }
